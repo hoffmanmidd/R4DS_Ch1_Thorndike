@@ -1,0 +1,375 @@
+---
+title: "R4DS Chapter 1 with Thorndike data"
+author: "Hoffman"
+format: 
+  revealjs:
+    echo: true
+---
+
+## Chapter 1: Data visualization IN R4DS
+
+This chapter focuses on ggplot2, one of the core packages in the tidyverse. 
+
+To access the datasets, help pages, and functions used in this chapter, load the tidyverse by running:
+
+```{r}
+library(tidyverse)
+```
+
+## Other libraries to load
+We will load the ggthemes package, which offers a colorblind safe color palette
+```{r}
+library(ggthemes)
+```
+
+And we will grab our play dataset from Google Sheets
+So, load the package called googlesheets4
+```{r}
+library(googlesheets4)
+```
+
+## Grabbing data from Google Sheets
+
+And follow the instructions to download data from Google Sheets
+R4DS (2e) Chapter 20.3 Google Sheets
+```{r}
+gs4_deauth() # deauthorize Google Sheet so that anyone can access it
+students <- read_sheet("https://docs.google.com/spreadsheets/d/1hPYA-1X5RBlPzlH-tsdnXjM7wN0wq7FF3BmyigUJOPc/edit?usp=sharing")
+```
+
+## 1.2.1 The "students" dataframe 
+
+Type the name of the data frame in the console (in this case, "students") and R will print a preview of its contents
+```{r}
+students
+```
+
+This data frame contains 7 columns. 
+
+## Glimpse 
+For an alternative view, where you can see all variables and the first few observations of each variable, use glimpse():
+
+```{r}
+glimpse(students)
+```
+
+## 1.2.3 Creating a ggplot
+
+The blank canvas of a ggplot is created with the ggplot() function.
+```{r}
+ggplot(data = students)
+```
+
+## X axis
+Let's put "spelling" on the x axis. 
+
+aes() stands for aesthetic mappings
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling))
+```
+
+
+## Y axis
+Let's put "math" on the y axis
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math))
+```
+
+## Create a scatterplot 
+Use the function geom_point() to add a layer of points to your plot
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point()
+```
+
+## 1.2.4 Adding aesthetics and layers
+Does the relationship between spelling and math differ by classroom? 
+We incorporate "class"  into our plot and see if this reveals any additional insights into the apparent relationship between these variables. We do this by representing classroom with different colored points.To achieve this, we  modify the aesthetic. 
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point()
+```
+
+## Same plot
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point()
+```
+
+## Smooth curve
+Now let’s add one more layer: a smooth curve displaying the relationship. 
+Since this is a new geometric object representing our data, we will add a new geom as a layer on top of our point geom: geom_smooth(). And we will specify that we want to draw the line of best fit 
+based on a linear model with method = "lm".
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Smooth curve again
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## One linear model for all 
+While this is informative and is probably the best choice for us. However, if we are mimicking the book, we can allow the aesthetic mappings to identify the classroom for the points but to have the line of best fit represent the relationship for all students. We can do this by moving the color for geom_point only
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(method = "lm")
+```
+
+## Linear model for all
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(method = "lm")
+```
+
+## Shape of our data points
+And should also identify the classroom with shapes of the points.
+We can do this by adding the shape aesthetic to geom_point().
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm")
+```
+
+
+## See the two shapes?
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm")
+```
+
+
+## Labels
+And finally, we can improve the labels of our plot using the labs() function in a new layer. Some of the arguments to labs() might be self explanatory: title adds a title and subtitle adds a subtitle to the plot. Other arguments match the aesthetic mappings, x is the x-axis label, y is the y-axis label, and color and shape define the label for the legend. In addition, we can improve the color palette to be colorblind safe with the scale_color_colorblind() function from the ggthemes package.
+
+## Final plot
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Relationship between spelling and math",
+    subtitle = "By classroom",
+    x = "Spelling score",
+    y = "Math score",
+    color = "Classroom",
+    shape = "Classroom") +
+  scale_color_colorblind()
+```
+
+## Final plot again
+```{r, echo = FALSE}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Relationship between spelling and math",
+    subtitle = "By classroom",
+    x = "Spelling score",
+    y = "Math score",
+    color = "Classroom",
+    shape = "Classroom") +
+  scale_color_colorblind()
+```
+
+# 1.4 Visualizing distributions
+
+## 1.4.1 A categorical variable
+Let's visualize the distribution of the variable "class" using a bar plot.
+We will use the geom_bar() function to create a bar plot.
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = class)) +
+  geom_bar()
+```
+
+Clearly this is boring. 
+
+## A little more interesting
+Let's add some color to the bars.
+And let's also disaggregate by gender like they did in 1.5.2.
+
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = class, fill = gender)) +
+  geom_bar()
+```
+
+## 1.4.2 A numericcal variable 
+Let's visualize the distribution of the variable "math" using a histogram.
+We will use the geom_histogram() function to create a histogram.
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_histogram()
+```
+           
+## Histograms
+A histogram divides the x-axis into equally spaced bins and then uses the height of a bar to display the number of observations that fall in each bin. The number of bins can be adjusted with the bins argument in geom_histogram().
+The default number of bins is 30.
+Let's change the number of bins to 10.
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_histogram(bins = 10)
+```
+
+## Histogram in 10 bins
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_histogram(bins = 10)
+```
+
+## Density plots
+An alternative visualization for distributions of numerical variables is a density plot. A density plot is a smoothed-out version of a histogram and a practical alternative. 
+We can create a density plot with the geom_density() function.
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_density()
+```
+
+## Similar to NYT COVID reporting
+
+![7-day rolling average](COVID_7day_avg.png)
+
+
+## Replicate the NYT
+Similar to the ways that the New York Times displays COVID infections over time, we can look at a single data variable — like spelling test scores — To display the counts for each score (from 38 to 76) AND smoothed conditional means (known as a kernel smooth).
+```{r}
+ggplot(
+  data = students,
+  aes(x = spelling, y = after_stat(count))) +
+  geom_histogram(binwidth = 1, color = "black", fill = "grey") +
+  geom_density(lwd = .5, color = "black", adjust = .7, fill = "grey", alpha = .5) +
+  labs(title = "Spelling Scores for Two Classes") + 
+  labs(subtitle = "and overlayed density plot") +  
+  theme_classic() 
+```
+
+## Histogram and smoothed density
+```{r}
+ggplot(
+  data = students,
+  aes(x = spelling, y = after_stat(count))) +
+  geom_histogram(binwidth = 1, color = "black", fill = "grey") +
+  geom_density(lwd = .5, color = "black", adjust = .7, fill = "grey", alpha = .5) +
+  labs(title = "Spelling Scores for Two Classes") + 
+  labs(subtitle = "and overlayed density plot") +  
+  theme_classic() 
+```
+
+
+
+## 1.5.1 numerical AND categorical
+Let's visualize the distribution of the variable "math" by "class" using a box plot. We will use the geom_boxplot() function to create a box plot.
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = class, y = math)) +
+  geom_boxplot()
+```
+
+## Boxplots
+To visualize the relationship between a numerical and a categorical variable we can use side-by-side box plots. A boxplot is a type of visual shorthand for measures of position (percentiles) that describe a distribution. It is also useful for identifying potential outliers.
+
+A box that indicates the range of the middle half of the data, a distance known as the interquartile range (IQR), stretching from the 25th percentile of the distribution to the 75th percentile. In the middle of the box is a line that displays the median, i.e. 50th percentile, of the distribution. 
+
+## Boxplot math
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = class, y = math)) +
+  geom_boxplot()
+```
+
+## Density plots
+Alternatively, we can make density plots with geom_density()
+
+```{r} 
+ggplot(
+  data = students,
+  mapping = aes(x = math, fill = class)) +
+  geom_density(alpha = 0.5)
+```
+
+## 1.5.2 Two categorical variables 
+Let's visualize the distribution of the variable "class" and gender again using a bar plot. We will use the geom_bar() function to create a bar plot.
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = class, fill = gender)) +
+  geom_bar()
+```
+
+## 1.5.4 Three or more variables 
+Another way to approach three variables is to split your plot into facets.
+Each subplot will display the relationship between two variables,and the third variable will be represented by the facets.
+Let's visualize the relationship between "spelling" and "math" by "class"
+using a scatter plot with facets. 
+We will use the facet_wrap() function to create facets.
+
+## Spelling, Math, Class
+
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  facet_wrap(~class)
+```
+
