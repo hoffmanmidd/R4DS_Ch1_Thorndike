@@ -50,3 +50,70 @@ ggplot(
   data = students,
   mapping = aes(x = spelling, y = math)) +
   geom_point()
+
+# 1.2.4 Adding aesthetics and layers ------------------------------------------
+# Does the relationship between spelling and math differ by classroom? 
+# We incorporate "class"  into our plot and see if this reveals any additional 
+# insights into the apparent relationship between these variables. 
+# We do this by representing classroom with different colored points.
+# To achieve this, we  modify the aesthetic. 
+
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point()
+
+# Now let’s add one more layer: a smooth curve displaying the relationship. 
+# Since this is a new geometric object representing our data, 
+# we will add a new geom as a layer on top of our point geom: geom_smooth(). 
+# And we will specify that we want to draw the line of best fit 
+# based on a linear model with method = "lm".
+
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math, color = class)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+# While this is informative and is probably the best choice for us.
+# However, if we are mimicking the book, we can allow the aesthetic
+# mappings to identify the classroom for the points but to have the line of best fit
+# represent the relationship for all students. We can do this by moving the color
+# for geom_point only
+
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(method = "lm")
+
+# And should also identify the classroom with shapes of the points.
+# We can do this by adding the shape aesthetic to geom_point().
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm")
+
+# And finally, we can improve the labels of our plot using the labs() function 
+# in a new layer. 
+# Some of the arguments to labs() might be self explanatory: 
+# title adds a title and subtitle adds a subtitle to the plot. 
+# Other arguments match the aesthetic mappings, x is the x-axis label, 
+# y is the y-axis label, and color and shape define the label for the legend. 
+# In addition, we can improve the color palette to be colorblind safe with the 
+# scale_color_colorblind() function from the ggthemes package.
+
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Relationship between spelling and math",
+    subtitle = "By classroom",
+    x = "Spelling score",
+    y = "Math score",
+    color = "Classroom",
+    shape = "Classroom") +
+  scale_color_colorblind()
