@@ -117,3 +117,107 @@ ggplot(
     color = "Classroom",
     shape = "Classroom") +
   scale_color_colorblind()
+
+# 1.4 Visualizing distributions -----------------------------------------------
+
+# 1.4.1 A categorical variable
+# Let's visualize the distribution of the variable "class" using a bar plot.
+# We will use the geom_bar() function to create a bar plot.
+ggplot(
+  data = students,
+  mapping = aes(x = class)) +
+  geom_bar()
+
+# Clearly this is boring. Let's add some color to the bars.
+# And let's also disaggregate by gender like they did in 1.5.2.
+ggplot(
+  data = students,
+  mapping = aes(x = class, fill = gender)) +
+  geom_bar()
+
+# 1.4.2 A numercical variable ------------------------------------------------
+# Let's visualize the distribution of the variable "math" using a histogram.
+# We will use the geom_histogram() function to create a histogram.
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_histogram()
+           
+# A histogram divides the x-axis into equally spaced bins and then uses the 
+# height of a bar to display the number of observations that fall in each bin.
+# The number of bins can be adjusted with the bins argument in geom_histogram().
+# The default number of bins is 30.
+# Let's change the number of bins to 10.
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_histogram(bins = 10)
+
+# An alternative visualization for distributions of numerical variables is a density plot. 
+# A density plot is a smoothed-out version of a histogram and a practical alternative. 
+# We can create a density plot with the geom_density() function.
+ggplot(
+  data = students,
+  mapping = aes(x = math)) +
+  geom_density()
+
+# Similar to the ways that the New York Times displays COVID infections over time, 
+# we can look at a single data variable — like spelling test scores — 
+# to display the counts for each score (from 38 to 76) 
+# AND smoothed conditional means (known as a kernel smooth).
+ggplot(
+  data = students,
+  aes(x = spelling, y = after_stat(count))) +
+  geom_histogram(binwidth = 1, color = "black", fill = "grey") +
+  geom_density(lwd = .5, color = "black", adjust = .7, fill = "grey", alpha = .5) +
+  labs(title = "Spelling Scores for Two Classes") + 
+  labs(subtitle = "and overlayed density plot") +  
+  theme_classic() 
+
+
+# 1.5.1 A numerical and a categorical variable --------------------------------
+# Let's visualize the distribution of the variable "math" by "class" using a box plot.
+# We will use the geom_boxplot() function to create a box plot.
+ggplot(
+  data = students,
+  mapping = aes(x = class, y = math)) +
+  geom_boxplot()
+
+# To visualize the relationship between a numerical and a categorical variable 
+# we can use side-by-side box plots. 
+# A boxplot is a type of visual shorthand for measures of position (percentiles) 
+# that describe a distribution. 
+# It is also useful for identifying potential outliers.
+
+# A box that indicates the range of the middle half of the data, 
+# a distance known as the interquartile range (IQR), 
+# stretching from the 25th percentile of the distribution to the 75th percentile. 
+# In the middle of the box is a line that displays the median, 
+# i.e. 50th percentile, of the distribution. 
+
+# Alternatively, we can make density plots with geom_density()
+ggplot(
+  data = students,
+  mapping = aes(x = math, fill = class)) +
+  geom_density(alpha = 0.5)
+
+# 1.5.2 Two categorical variables ---------------------------------------------
+# Let's visualize the distribution of the variable "class" and gender again
+# using a bar plot. We will use the geom_bar() function to create a bar plot.
+ggplot(
+  data = students,
+  mapping = aes(x = class, fill = gender)) +
+  geom_bar()
+
+# 1.5.4 Three or more variables ------------------------------------------------
+# Another way to approach three variables is to split your plot into facets.
+# Each subplot will display the relationship between two variables,
+# and the third variable will be represented by the facets.
+# Let's visualize the relationship between "spelling" and "math" by "class"
+# using a scatter plot with facets. 
+# We will use the facet_wrap() function to create facets.
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  facet_wrap(~class)
