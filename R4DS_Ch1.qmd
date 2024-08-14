@@ -285,7 +285,6 @@ ggplot(
 
 ![7-day rolling average](COVID_7day_avg.png)
 
-
 ## Replicate the NYT
 Similar to the ways that the New York Times displays COVID infections over time, we can look at a single data variable — like spelling test scores — To display the counts for each score (from 38 to 76) AND smoothed conditional means (known as a kernel smooth).
 ```{r}
@@ -373,3 +372,11 @@ ggplot(
   facet_wrap(~class)
 ```
 
+### Spelling Math, Class
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = class, shape = class)) +
+  facet_wrap(~class)
+```
