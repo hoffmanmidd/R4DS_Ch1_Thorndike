@@ -22,7 +22,7 @@ We will load the ggthemes package, which offers a colorblind safe color palette
 library(ggthemes)
 ```
 
-And we will grab our play dataset from Google Sheets
+And we will grab our play dataset from Google Sheets. 
 So, load the package called googlesheets4
 ```{r}
 library(googlesheets4)
@@ -30,8 +30,7 @@ library(googlesheets4)
 
 ## Grabbing data from Google Sheets
 
-And follow the instructions to download data from Google Sheets
-R4DS (2e) Chapter 20.3 Google Sheets
+Follow the instructions to download data from Google Sheets in R4DS Chapter 20.3 
 ```{r}
 gs4_deauth() # deauthorize Google Sheet so that anyone can access it
 students <- read_sheet("https://docs.google.com/spreadsheets/d/1hPYA-1X5RBlPzlH-tsdnXjM7wN0wq7FF3BmyigUJOPc/edit?usp=sharing")
@@ -47,10 +46,11 @@ students
 This data frame contains 7 columns. 
 
 ## Glimpse 
-For an alternative view, where you can see all variables and the first few observations of each variable, use glimpse():
+For an alternative view, where you can see all variables and the first few observations of each variable, use glimpse(): 
+
 
 ```{r}
-glimpse(students)
+glimpse(students) 
 ```
 
 ## 1.2.3 Creating a ggplot
@@ -356,8 +356,24 @@ ggplot(
 ```
 
 ## 1.5.4 Three or more variables 
-Another way to approach three variables is to split your plot into facets.
-Each subplot will display the relationship between two variables,and the third variable will be represented by the facets.
+We can incorporate more variables into a plot by mapping them to additional aesthetics. 
+For example, in the following scatterplot the colors of points represent gender and the shapes of points represent which classroom.
+
+```{r}
+ggplot(students, aes(x = spelling, y = math)) +
+  geom_point(aes(color = gender, shape = class))
+```
+
+## Four variables, two legends
+```{r}
+ggplot(students, aes(x = spelling, y = math)) +
+  geom_point(aes(color = gender, shape = class))
+```
+
+
+## 1.5.4 Facets
+Another way to approach three or more variables is to split your plot into facets.
+Each subplot will display the relationship between two variables, and the third variable will be represented by the facets. And we will 
 Let's visualize the relationship between "spelling" and "math" by "class"
 using a scatter plot with facets. 
 We will use the facet_wrap() function to create facets.
@@ -368,15 +384,24 @@ We will use the facet_wrap() function to create facets.
 ggplot(
   data = students,
   mapping = aes(x = spelling, y = math)) +
-  geom_point(aes(color = class, shape = class)) +
+  geom_point() +
   facet_wrap(~class)
 ```
 
-### Spelling Math, Class
+## Spelling Math, Class in color
 ```{r}
 ggplot(
   data = students,
   mapping = aes(x = spelling, y = math)) +
   geom_point(aes(color = class, shape = class)) +
+  facet_wrap(~class)
+```
+
+## Or put all four on two plots
+```{r}
+ggplot(
+  data = students,
+  mapping = aes(x = spelling, y = math)) +
+  geom_point(aes(color = gender, shape = gender)) +
   facet_wrap(~class)
 ```
